@@ -16,7 +16,7 @@ def registro_usuario(request):
         else:
             Usuario.objects.create(nombreUsuario=nombre, password=password)
             messages.success(request, 'Usuario registrado correctamente.')
-            return redirect('login.html')  # Ajusta la URL según tu flujo
+            return redirect('login_usuario')  # Ajusta la URL según tu flujo
 
     return render(request, 'registro.html')
 
@@ -39,7 +39,7 @@ def login_usuario(request):
         except Usuario.DoesNotExist:
             messages.error(request, 'El usuario no existe.')
 
-    return render(request, 'login.html')
+    return render(request, 'login.html') 
 
 from .models import Semestre
 

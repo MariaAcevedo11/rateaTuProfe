@@ -27,7 +27,7 @@ urlpatterns = [
     path('semestres/<int:semestre_id>/materias/', views.ver_materias, name='ver_materias'),
     path('materias/<int:materia_id>/profesores/', views.ver_profesores, name='ver_profesores'),
     path('profesor/<int:profesor_id>/comentarios/', views.ver_comentarios, name='ver_comentarios'),
-    path('', include('profesores.urls'))
+    path('profesores/', include('profesores.urls')),
 
 
 ]
