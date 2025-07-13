@@ -1,0 +1,330 @@
+<!-- templates/semestres.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleccionar Semestre</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #10b981, #3b82f6);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 20px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+        }
+
+        .back-link:hover {
+            background: #f3f4f6;
+            color: #3b82f6;
+            transform: translateX(-4px);
+        }
+
+        .back-link .icon {
+            margin-right: 8px;
+            font-size: 16px;
+        }
+
+        .title-section {
+            text-align: center;
+        }
+
+        .title-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.8;
+        }
+
+        h1 {
+            color: #1f2937;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .semestres-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .semestre-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+
+        .semestre-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #10b981, #3b82f6);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .semestre-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border-color: #e5e7eb;
+        }
+
+        .semestre-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .semestre-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .semestre-content {
+            text-align: center;
+        }
+
+        .semestre-icon {
+            font-size: 40px;
+            margin-bottom: 16px;
+            opacity: 0.7;
+        }
+
+        .semestre-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .semestre-label {
+            color: #6b7280;
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .arrow-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .semestre-card:hover .arrow-icon {
+            color: #3b82f6;
+            transform: translateY(-50%) translateX(4px);
+        }
+
+        .empty-state {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            grid-column: 1 / -1;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            color: #6b7280;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .empty-description {
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            .header {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .semestres-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .semestre-card {
+                padding: 20px;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Animación de carga para las tarjetas */
+        .semestre-card {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .semestre-card:nth-child(1) { animation-delay: 0.1s; }
+        .semestre-card:nth-child(2) { animation-delay: 0.2s; }
+        .semestre-card:nth-child(3) { animation-delay: 0.3s; }
+        .semestre-card:nth-child(4) { animation-delay: 0.4s; }
+        .semestre-card:nth-child(5) { animation-delay: 0.5s; }
+        .semestre-card:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">            
+            <div class="title-section">
+                <div class="title-icon">📚</div>
+                <h1>Selecciona tu semestre</h1>
+                <p class="subtitle">Elige el semestre que estás buscando para ver las materias disponibles</p>
+            </div>
+        </div>
+
+        <div class="semestres-grid">
+            {% for semestre in semestres %}
+                <div class="semestre-card">
+                    <a href="{% url 'ver_materias' semestre.id %}" class="semestre-link">
+                        <div class="semestre-content">
+                            <div class="semestre-icon">🎓</div>
+                            <div class="semestre-number">Semestre {{ semestre.numeroSemestre }}</div>
+                            <div class="semestre-label">Ver materias</div>
+                        </div>
+                        <div class="arrow-icon">→</div>
+                    </a>
+                </div>
+            {% empty %}
+                <div class="empty-state">
+                    <div class="empty-icon">📭</div>
+                    <div class="empty-title">No hay semestres disponibles</div>
+                    <div class="empty-description">Actualmente no hay semestres configurados en el sistema</div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        // Agregar efectos de interacción
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.semestre-card');
+            
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-8px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        });
+
+        // Efecto de clic con feedback visual
+        document.querySelectorAll('.semestre-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                const card = this.closest('.semestre-card');
+                card.style.transform = 'scale(0.98)';
+                
+                setTimeout(() => {
+                    card.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
+    </script>
+</body>
+</html>

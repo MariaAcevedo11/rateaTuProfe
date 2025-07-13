@@ -1,0 +1,444 @@
+<!-- templates/materias.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Materias - {{ semestre }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #10b981);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 20px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+        }
+
+        .back-link:hover {
+            background: #f3f4f6;
+            color: #3b82f6;
+            transform: translateX(-4px);
+        }
+
+        .back-link .icon {
+            margin-right: 8px;
+            font-size: 16px;
+        }
+
+        .title-section {
+            text-align: center;
+        }
+
+        .title-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.8;
+        }
+
+        .semestre-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        h1 {
+            color: #1f2937;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .materias-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .materia-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+
+        .materia-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #3b82f6, #10b981);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .materia-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border-color: #e5e7eb;
+        }
+
+        .materia-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .materia-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .materia-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .materia-info {
+            flex: 1;
+        }
+
+        .materia-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+            opacity: 0.7;
+        }
+
+        .materia-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 6px;
+            line-height: 1.3;
+        }
+
+        .materia-description {
+            color: #6b7280;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .arrow-icon {
+            color: #9ca3af;
+            font-size: 24px;
+            transition: all 0.3s ease;
+            margin-left: 16px;
+        }
+
+        .materia-card:hover .arrow-icon {
+            color: #3b82f6;
+            transform: translateX(4px);
+        }
+
+        .empty-state {
+            background: white;
+            border-radius: 16px;
+            padding: 50px 40px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            grid-column: 1 / -1;
+            border: 2px dashed #e5e7eb;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            color: #6b7280;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .empty-description {
+            color: #9ca3af;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .stats-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .stats-content {
+            color: white;
+        }
+
+        .stats-number {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .stats-label {
+            font-size: 14px;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            .header {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .materias-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .materia-card {
+                padding: 20px;
+            }
+
+            .materia-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .arrow-icon {
+                align-self: flex-end;
+                margin-left: 0;
+                margin-top: 12px;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Animación de carga para las tarjetas */
+        .materia-card {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .materia-card:nth-child(1) { animation-delay: 0.1s; }
+        .materia-card:nth-child(2) { animation-delay: 0.2s; }
+        .materia-card:nth-child(3) { animation-delay: 0.3s; }
+        .materia-card:nth-child(4) { animation-delay: 0.4s; }
+        .materia-card:nth-child(5) { animation-delay: 0.5s; }
+        .materia-card:nth-child(6) { animation-delay: 0.6s; }
+        .materia-card:nth-child(7) { animation-delay: 0.7s; }
+        .materia-card:nth-child(8) { animation-delay: 0.8s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Iconos específicos por tipo de materia */
+        .materia-card:nth-child(odd) .materia-icon::before {
+            content: '📖';
+        }
+        .materia-card:nth-child(even) .materia-icon::before {
+            content: '🔬';
+        }
+        .materia-card:nth-child(3n) .materia-icon::before {
+            content: '💻';
+        }
+        .materia-card:nth-child(4n) .materia-icon::before {
+            content: '📊';
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="{% url 'seleccionar_semestre' %}" class="back-link">
+                <span class="icon">⬅️</span>
+                Volver a semestres
+            </a>
+            
+            <div class="title-section">
+                <div class="title-icon">📚</div>
+                <div class="semestre-badge">{{ semestre }}</div>
+                <h1>Materias disponibles</h1>
+                <p class="subtitle">Selecciona una materia para ver los profesores disponibles</p>
+            </div>
+        </div>
+
+        {% if materias %}
+            <div class="stats-section">
+                <div class="stats-content">
+                    <div class="stats-number">{{ materias|length }}</div>
+                    <div class="stats-label">Materias disponibles</div>
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="materias-grid">
+            {% for materia in materias %}
+                <div class="materia-card">
+                    <a href="{% url 'ver_profesores' materia.id %}" class="materia-link">
+                        <div class="materia-content">
+                            <div class="materia-info">
+                                <div class="materia-icon"></div>
+                                <div class="materia-name">{{ materia.nombreMateria }}</div>
+                                <div class="materia-description">Ver profesores disponibles</div>
+                            </div>
+                            <div class="arrow-icon">→</div>
+                        </div>
+                    </a>
+                </div>
+            {% empty %}
+                <div class="empty-state">
+                    <div class="empty-icon">📭</div>
+                    <div class="empty-title">No hay materias registradas</div>
+                    <div class="empty-description">
+                        Actualmente no hay materias disponibles para {{ semestre }}.<br>
+                        Contacta al administrador para más información.
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        // Agregar efectos de interacción
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.materia-card');
+            
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-8px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        });
+
+        // Efecto de clic con feedback visual
+        document.querySelectorAll('.materia-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                const card = this.closest('.materia-card');
+                card.style.transform = 'scale(0.98)';
+                
+                setTimeout(() => {
+                    card.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
+
+        // Contador animado para las estadísticas
+        function animateCounter() {
+            const counter = document.querySelector('.stats-number');
+            if (counter) {
+                const target = parseInt(counter.textContent);
+                let current = 0;
+                const increment = target / 30;
+                
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        counter.textContent = target;
+                        clearInterval(timer);
+                    } else {
+                        counter.textContent = Math.floor(current);
+                    }
+                }, 50);
+            }
+        }
+
+        // Ejecutar animación del contador después de la carga
+        setTimeout(animateCounter, 800);
+    </script>
+</body>
+</html>

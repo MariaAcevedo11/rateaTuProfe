@@ -1,0 +1,639 @@
+<!-- templates/comentarios.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comentarios - {{ profesor.nombreProfesor }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #10b981);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 20px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+        }
+
+        .back-link:hover {
+            background: #f3f4f6;
+            color: #3b82f6;
+            transform: translateX(-4px);
+        }
+
+        .back-link .icon {
+            margin-right: 8px;
+            font-size: 16px;
+        }
+
+        .profesor-info {
+            text-align: center;
+        }
+
+        .profesor-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 16px;
+            border: 3px solid #f9fafb;
+        }
+
+        .profesor-name {
+            color: #1f2937;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .profesor-subtitle {
+            color: #6b7280;
+            font-size: 16px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .form-section, .stats-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #10b981, #059669);
+        }
+
+        .stats-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .rating-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 16px;
+            background: #f9fafb;
+            transition: all 0.3s ease;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 12px center;
+            background-repeat: no-repeat;
+            background-size: 16px;
+        }
+
+        .rating-select:focus {
+            outline: none;
+            border-color: #10b981;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: #f9fafb;
+            border-radius: 12px;
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-group:hover {
+            background: #f3f4f6;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #10b981;
+        }
+
+        .checkbox-label {
+            font-weight: 500;
+            color: #374151;
+            cursor: pointer;
+        }
+
+        .textarea-field {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 16px;
+            background: #f9fafb;
+            transition: all 0.3s ease;
+            resize: vertical;
+            min-height: 120px;
+            font-family: inherit;
+        }
+
+        .textarea-field:focus {
+            outline: none;
+            border-color: #10b981;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .stats-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: #f9fafb;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .stat-label {
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .stat-value {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .comments-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .comments-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6);
+        }
+
+        .comments-list {
+            display: grid;
+            gap: 20px;
+        }
+
+        .comment-card {
+            background: #f9fafb;
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+
+        .comment-card:hover {
+            background: #f3f4f6;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .comment-author {
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .comment-date {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .comment-ratings {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .rating-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: white;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .recommendation {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .recommendation.yes {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .recommendation.no {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .comment-text {
+            color: #374151;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .empty-comments {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+
+        .empty-comments-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            .header, .form-section, .stats-section, .comments-section {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .profesor-name {
+                font-size: 24px;
+            }
+
+            .comment-ratings {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .comment-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-section, .stats-section {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .form-section { animation-delay: 0.1s; }
+        .stats-section { animation-delay: 0.2s; }
+        .comments-section { animation-delay: 0.3s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="{% url 'ver_profesores' materia_id=profesor.materiasQueDa.first.id %}" class="back-link">
+                <span class="icon">⬅️</span>
+                Volver a profesores
+            </a>
+            
+            <div class="profesor-info">
+                <div class="profesor-avatar">👨‍🏫</div>
+                <div class="profesor-name">{{ profesor.nombreProfesor }}</div>
+                <div class="profesor-subtitle">Comentarios y calificaciones</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="form-section">
+                <h2 class="section-title">
+                    ✍️ Deja tu comentario
+                </h2>
+                
+                <form method="post" id="commentForm">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label class="form-label">Claridad:</label>
+                        <select name="claridad" class="rating-select" required>
+                            <option value="">Selecciona una calificación</option>
+                            {% for i in "12345" %}
+                                <option value="{{ i }}">{{ i }} ⭐ - {% if i == "1" %}Muy mala{% elif i == "2" %}Mala{% elif i == "3" %}Regular{% elif i == "4" %}Buena{% else %}Excelente{% endif %}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Exigencia:</label>
+                        <select name="exigencia" class="rating-select" required>
+                            <option value="">Selecciona una calificación</option>
+                            {% for i in "12345" %}
+                                <option value="{{ i }}">{{ i }} ⭐ - {% if i == "1" %}Muy baja{% elif i == "2" %}Baja{% elif i == "3" %}Moderada{% elif i == "4" %}Alta{% else %}Muy alta{% endif %}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Respeto:</label>
+                        <select name="respeto" class="rating-select" required>
+                            <option value="">Selecciona una calificación</option>
+                            {% for i in "12345" %}
+                                <option value="{{ i }}">{{ i }} ⭐ - {% if i == "1" %}Muy malo{% elif i == "2" %}Malo{% elif i == "3" %}Regular{% elif i == "4" %}Bueno{% else %}Excelente{% endif %}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">¿Lo recomiendas?</label>
+                        <div class="checkbox-group">
+                            <input type="checkbox" name="recomienda" id="recomienda">
+                            <label for="recomienda" class="checkbox-label">Sí, recomiendo este profesor</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Comentario:</label>
+                        <textarea name="texto" class="textarea-field" placeholder="Comparte tu experiencia con este profesor..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        Enviar Comentario
+                    </button>
+                </form>
+            </div>
+
+            <div class="stats-section">
+                <h2 class="section-title">
+                    📊 Promedios
+                </h2>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-label">Claridad</span>
+                        <span class="stat-value">
+                            {{ profesor.promedioClaridad|floatformat:1 }} ⭐
+                        </span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Exigencia</span>
+                        <span class="stat-value">
+                            {{ profesor.promedioExigencia|floatformat:1 }} ⭐
+                        </span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Respeto</span>
+                        <span class="stat-value">
+                            {{ profesor.promedioRespeto|floatformat:1 }} ⭐
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="comments-section">
+            <h2 class="section-title">
+                💬 Comentarios anteriores
+            </h2>
+            
+            <div class="comments-list">
+                {% for c in comentarios %}
+                    <div class="comment-card">
+                        <div class="comment-header">
+                            <span class="comment-author">{{ c.usuario.nombreUsuario }}</span>
+                            <span class="comment-date">{{ c.fecha|date:"d-M-Y" }}</span>
+                        </div>
+                        
+                        <div class="comment-ratings">
+                            <div class="rating-item">
+                                Claridad: {{ c.calificacionClaridad }} ⭐
+                            </div>
+                            <div class="rating-item">
+                                Exigencia: {{ c.calificacionExigencia }} ⭐
+                            </div>
+                            <div class="rating-item">
+                                Respeto: {{ c.calificacionRespeto }} ⭐
+                            </div>
+                        </div>
+                        
+                        <div class="recommendation {% if c.recomienda %}yes{% else %}no{% endif %}">
+                            {% if c.recomienda %}
+                                ✅ Recomendado
+                            {% else %}
+                                ❌ No recomendado
+                            {% endif %}
+                        </div>
+                        
+                        <div class="comment-text">
+                            "{{ c.texto }}"
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="empty-comments">
+                        <div class="empty-comments-icon">💭</div>
+                        <p>No hay comentarios todavía.</p>
+                        <p>¡Sé el primero en compartir tu experiencia!</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Agregar efectos de interacción al formulario
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('commentForm');
+            const selects = document.querySelectorAll('.rating-select');
+            const textarea = document.querySelector('.textarea-field');
+            
+            // Efectos en los selects
+            selects.forEach(select => {
+                select.addEventListener('change', function() {
+                    this.style.borderColor = '#10b981';
+                    this.style.background = 'white';
+                });
+            });
+
+            // Contador de caracteres para textarea
+            textarea.addEventListener('input', function() {
+                const length = this.value.length;
+                if (length > 0) {
+                    this.style.borderColor = '#10b981';
+                    this.style.background = 'white';
+                }
+            });
+
+            // Efecto de envío del formulario
+            form.addEventListener('submit', function() {
+                const submitBtn = document.querySelector('.submit-btn');
+                submitBtn.textContent = 'Enviando...';
+                submitBtn.style.background = 'linear-gradient(135deg, #6b7280, #4b5563)';
+            });
+        });
+
+        // Animación para las tarjetas de comentarios
+        const commentCards = document.querySelectorAll('.comment-card');
+        commentCards.forEach((card, index) => {
+            card.style.animationDelay = `${0.4 + (index * 0.1)}s`;
+            card.classList.add('fadeInUp');
+        });
+    </script>
+</body>
+</html>

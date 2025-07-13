@@ -1,0 +1,513 @@
+<!-- templates/profesores.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profesores - {{ materia.nombreMateria }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #10b981, #3b82f6);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 20px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+        }
+
+        .back-link:hover {
+            background: #f3f4f6;
+            color: #3b82f6;
+            transform: translateX(-4px);
+        }
+
+        .back-link .icon {
+            margin-right: 8px;
+            font-size: 16px;
+        }
+
+        .title-section {
+            text-align: center;
+        }
+
+        .title-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.8;
+        }
+
+        .materia-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        h1 {
+            color: #1f2937;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .profesores-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin-top: 20px;
+        }
+
+        .profesor-card {
+            background: white;
+            border-radius: 20px;
+            padding: 28px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+
+        .profesor-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #10b981, #3b82f6);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .profesor-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            border-color: #e5e7eb;
+        }
+
+        .profesor-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .profesor-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .profesor-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .profesor-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            flex-shrink: 0;
+            border: 3px solid #f9fafb;
+            transition: all 0.3s ease;
+        }
+
+        .profesor-card:hover .profesor-avatar {
+            transform: scale(1.1);
+            border-color: #3b82f6;
+        }
+
+        .profesor-info {
+            flex: 1;
+        }
+
+        .profesor-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .profesor-description {
+            color: #6b7280;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .profesor-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .rating-display {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: #f9fafb;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .comments-count {
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .arrow-icon {
+            color: #9ca3af;
+            font-size: 24px;
+            transition: all 0.3s ease;
+            margin-left: auto;
+        }
+
+        .profesor-card:hover .arrow-icon {
+            color: #3b82f6;
+            transform: translateX(6px);
+        }
+
+        .empty-state {
+            background: white;
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            grid-column: 1 / -1;
+            border: 2px dashed #e5e7eb;
+        }
+
+        .empty-icon {
+            font-size: 80px;
+            margin-bottom: 24px;
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            color: #6b7280;
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .empty-description {
+            color: #9ca3af;
+            font-size: 16px;
+            line-height: 1.6;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .stats-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .stats-content {
+            color: white;
+        }
+
+        .stats-number {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .stats-label {
+            font-size: 14px;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            .header {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            
+            h1 {
+                font-size: 22px;
+            }
+            
+            .profesores-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .profesor-card {
+                padding: 20px;
+            }
+
+            .profesor-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 16px;
+            }
+
+            .profesor-avatar {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+            }
+
+            .profesor-actions {
+                justify-content: center;
+            }
+
+            .materia-badge {
+                font-size: 12px;
+                padding: 6px 16px;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Animación de carga para las tarjetas */
+        .profesor-card {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .profesor-card:nth-child(1) { animation-delay: 0.1s; }
+        .profesor-card:nth-child(2) { animation-delay: 0.2s; }
+        .profesor-card:nth-child(3) { animation-delay: 0.3s; }
+        .profesor-card:nth-child(4) { animation-delay: 0.4s; }
+        .profesor-card:nth-child(5) { animation-delay: 0.5s; }
+        .profesor-card:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Avatares con diferentes colores */
+        .profesor-card:nth-child(odd) .profesor-avatar {
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+        }
+        .profesor-card:nth-child(even) .profesor-avatar {
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+        }
+        .profesor-card:nth-child(3n) .profesor-avatar {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+        }
+        .profesor-card:nth-child(4n) .profesor-avatar {
+            background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="{% url 'ver_materias' semestre_id=materia.semestreEnQueSeCursa.id %}" class="back-link">
+                <span class="icon">⬅️</span>
+                Volver a materias
+            </a>
+            
+            <div class="title-section">
+                <div class="title-icon">👨‍🏫</div>
+                <div class="materia-badge">{{ materia.nombreMateria }}</div>
+                <h1>Profesores disponibles</h1>
+                <p class="subtitle">Selecciona un profesor para ver comentarios y calificaciones</p>
+            </div>
+        </div>
+
+        {% if profesores %}
+            <div class="stats-section">
+                <div class="stats-content">
+                    <div class="stats-number">{{ profesores|length }}</div>
+                    <div class="stats-label">Profesores disponibles</div>
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="profesores-grid">
+            {% for profesor in profesores %}
+                <div class="profesor-card">
+                    <a href="{% url 'ver_comentarios' profesor.id %}" class="profesor-link">
+                        <div class="profesor-content">
+                            <div class="profesor-avatar">
+                                👨‍🏫
+                            </div>
+                            <div class="profesor-info">
+                                <div class="profesor-name">{{ profesor.nombreProfesor }}</div>
+                                <div class="profesor-description">Ver comentarios y calificaciones</div>
+                                <div class="profesor-actions">
+                                    <div class="rating-display">
+                                        ⭐ Sin calificar
+                                    </div>
+                                    <div class="comments-count">
+                                        💬 Comentarios
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="arrow-icon">→</div>
+                        </div>
+                    </a>
+                </div>
+            {% empty %}
+                <div class="empty-state">
+                    <div class="empty-icon">👨‍🏫</div>
+                    <div class="empty-title">No hay profesores registrados</div>
+                    <div class="empty-description">
+                        Actualmente no hay profesores disponibles para <strong>{{ materia.nombreMateria }}</strong>.<br>
+                        Contacta al administrador para agregar profesores a esta materia.
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        // Agregar efectos de interacción
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.profesor-card');
+            
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-10px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        });
+
+        // Efecto de clic con feedback visual
+        document.querySelectorAll('.profesor-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                const card = this.closest('.profesor-card');
+                card.style.transform = 'scale(0.98)';
+                
+                setTimeout(() => {
+                    card.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
+
+        // Contador animado para las estadísticas
+        function animateCounter() {
+            const counter = document.querySelector('.stats-number');
+            if (counter) {
+                const target = parseInt(counter.textContent);
+                let current = 0;
+                const increment = target / 30;
+                
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        counter.textContent = target;
+                        clearInterval(timer);
+                    } else {
+                        counter.textContent = Math.floor(current);
+                    }
+                }, 50);
+            }
+        }
+
+        // Ejecutar animación del contador después de la carga
+        setTimeout(animateCounter, 800);
+
+        // Generar avatares aleatorios para profesores
+        document.querySelectorAll('.profesor-avatar').forEach((avatar, index) => {
+            const profesorIcons = ['👨‍🏫', '👩‍🏫', '🧑‍🏫', '👨‍💼', '👩‍💼'];
+            avatar.textContent = profesorIcons[index % profesorIcons.length];
+        });
+    </script>
+</body>
+</html>
